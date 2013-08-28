@@ -114,7 +114,7 @@ int main()
    // Parse the buffer
    char *parseBuffer = buffer;
    int memLocation = 0;
-   int expectedArgs = -1;
+   int expectedArgs = 0;
    std::vector<CodeLabel*> labels;
    
    while(*parseBuffer != NULL)
@@ -162,13 +162,13 @@ int main()
                expectedArgs--;
             }
          }
+      }
 
-         if(expectedArgs < 0)
-         {
-            std::cout<<"Error: too many arguments"<<std::endl;
-            std::cin.get();
-            return 1;
-         }
+      if(expectedArgs < 0)
+      {
+         std::cout<<"Error: too many arguments"<<std::endl;
+         std::cin.get();
+         return 1;
       }
 
       delete tok;
