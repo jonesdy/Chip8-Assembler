@@ -1,0 +1,40 @@
+					; Comment
+example:			; Label
+	clr				; Clear screen
+	ret				; Return from subroutine
+	jmp nnn			; Jump to nnn, nnn can also be a label
+	call example	; Call subroutine at nnn
+	shr vx			; Shift vx right by one
+	shl vx			; Shift vx left by one
+	ind nnn			; Sets I to the address NNN
+	jmp0 nnn		; Jumps to the address NNN plus V0
+	kse vx			; Skips the next instruction if the key stored in vx is pressed
+	ksn vx			; Skips the next instruction if the key stored in vx isn't pressed
+	del vx			; Sets vx to the value of the delay timer
+	wkp vx			; A key press is awaited, and then stored in vx
+	setd vx			; Sets the delay timer to vx
+	sets vx			; Sets the sound timer to vx
+	adi vx			; Adds xv to I
+	spr vx			; Sets I to the location of the sprite for the character in vx
+	sbi vx			; Stores the binary-coded decimal representation of VX at I, I + 1, and I + 2
+	sto vx			; Stores v0 to vx in memory starting at address I
+	fil vx			; Fills vo to vx with values from memory starting at address I
+	se vx    , nn	; Skip the next instruction if vx == nn
+	sne vx, nn		; Skip the next instruction if vx != nn
+	se vx, vy		; Skip the next instruction if vx == vy
+	set vx, nn		; Sets vx to nn
+	add vx, nn		; Adds nn to vx
+	set vx, vy		; Sets vx to the value of vy
+	or vx, vy		; Sets vx to vx or vy
+	and vx, vy		; Sets vx to vx and vy
+	xor vx, vy		; Sets vx to vx xor vy
+	add vx, vy		; vx += vy
+	sub vx, vy		; vx -= vy
+	subx vx, vy		; vx = vy - vx
+	sne vx, vy		; Skip the next instruction if vx != vy
+	rnd vx, nn		; Sets vx to a random number and nn
+	draw vx, vy, n	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I
+	ret
+	
+	;or vx, vy, vz	; Should fail, and does
+	draw vx			; Should also fail, but it doesn't right now
