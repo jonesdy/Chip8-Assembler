@@ -34,7 +34,8 @@ example:			; Label
 	sne vx, vy		; Skip the next instruction if vx != vy
 	rnd vx, nn		; Sets vx to a random number and nn
 	draw vx, vy, n	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I
+	;draw vx			; Should fail, and does
 	ret
 	
 	;or vx, vy, vz	; Should fail, and does
-	draw vx			; Should also fail, but it doesn't right now
+	;draw vx			; Should also fail, and does

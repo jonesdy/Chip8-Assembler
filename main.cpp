@@ -115,6 +115,7 @@ int main()
    char *parseBuffer = buffer;
    int memLocation = 0;
    int expectedArgs = 0;
+   int actualArgs = 0;
    std::vector<CodeLabel*> labels;
    
    while(*parseBuffer != NULL)
@@ -145,7 +146,18 @@ int main()
             tok[len - 1] = NULL;    // Get rid of the ,
             std::cout<<"Comma found: "<<tok<<std::endl;
             if(strcmp(tok, ""))
-               expectedArgs--;
+               actualArgs++;
+
+            if(actualArgs == expectedArgs)
+               std::cout<<"Instruction's arguments completed"<<std::endl;
+            else if(actualArgs > expectedArgs)
+            {
+               std::cout<<"Too many arguments for last instruction"<<std::endl;
+               delete tok;
+               delete[] buffer;
+               std::cin.get();
+               return 1;
+            }
             break;
          }
       default:
@@ -153,25 +165,44 @@ int main()
             int numArgs = getNumArgs(tok);
             if(numArgs != -1)
             {
+               if(expectedArgs != actualArgs)
+               {
+                  std::cout<<"Too few arguments for last instruction"<<std::endl;
+                  delete tok;
+                  delete[] buffer;
+                  std::cin.get();
+                  return 1;
+               }
                std::cout<<"Instruction found: "<<tok<<" "<<numArgs<<std::endl;
                expectedArgs = numArgs;
+               actualArgs = 0;
             }
             else
             {
                std::cout<<"Argument found: "<<tok<<std::endl;
-               expectedArgs--;
+               actualArgs++;
+               if(actualArgs == expectedArgs)
+                  std::cout<<"Instruction's arguments completed"<<std::endl;
+               else if(actualArgs > expectedArgs)
+               {
+                  std::cout<<"Too many arguments for last instruction"<<std::endl;
+                  delete tok;
+                  delete[] buffer;
+                  std::cin.get();
+                  return 1;
+               }
             }
          }
       }
 
-      if(expectedArgs < 0)
-      {
-         std::cout<<"Error: too many arguments"<<std::endl;
-         std::cin.get();
-         return 1;
-      }
-
       delete tok;
+   }
+   if(actualArgs != expectedArgs)
+   {
+      std::cout<<"Too few arguments for last instruction"<<std::endl;
+      delete[] buffer;
+      std::cin.get();
+      return 1;
    }
 
    std::vector<CodeLabel*>::const_iterator iter = labels.begin();
