@@ -117,8 +117,10 @@ int main()
    int expectedArgs = 0;
    int actualArgs = 0;
    std::vector<CodeLabel*> labels;
+
+   bool good = true;
    
-   while(*parseBuffer != NULL)
+   while((*parseBuffer != NULL) && good)
    {
       skipWhiteSpace(parseBuffer);
 
@@ -153,10 +155,7 @@ int main()
             else if(actualArgs > expectedArgs)
             {
                std::cout<<"Too many arguments for last instruction"<<std::endl;
-               delete tok;
-               delete[] buffer;
-               std::cin.get();
-               return 1;
+               good = false;
             }
             break;
          }
@@ -168,10 +167,7 @@ int main()
                if(expectedArgs != actualArgs)
                {
                   std::cout<<"Too few arguments for last instruction"<<std::endl;
-                  delete tok;
-                  delete[] buffer;
-                  std::cin.get();
-                  return 1;
+                  good = false;
                }
                std::cout<<"Instruction found: "<<tok<<" "<<numArgs<<std::endl;
                expectedArgs = numArgs;
@@ -186,10 +182,7 @@ int main()
                else if(actualArgs > expectedArgs)
                {
                   std::cout<<"Too many arguments for last instruction"<<std::endl;
-                  delete tok;
-                  delete[] buffer;
-                  std::cin.get();
-                  return 1;
+                  good = false;
                }
             }
          }
@@ -197,12 +190,11 @@ int main()
 
       delete tok;
    }
-   if(actualArgs != expectedArgs)
+
+   if((actualArgs != expectedArgs) && good)
    {
       std::cout<<"Too few arguments for last instruction"<<std::endl;
-      delete[] buffer;
-      std::cin.get();
-      return 1;
+      good = false;
    }
 
    std::vector<CodeLabel*>::const_iterator iter = labels.begin();
@@ -216,7 +208,11 @@ int main()
 
    delete[] buffer;
 
-   std::cout<<"Code assembled"<<std::endl;
+   if(good)
+      std::cout<<"Code assembled"<<std::endl;
+   else
+      std::cout<<"Assembly failed"<<std::endl;
+
    std::cin.get();
 
    return 0;
