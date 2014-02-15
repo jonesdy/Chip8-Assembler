@@ -27,3 +27,13 @@ unsigned int CodeLabel::getLocation()
 {
    return location;
 }
+
+void CodeLabel::setLabelName(std::string label)
+{
+   labelName = label;
+}
+
+void CodeLabel::setLocation(unsigned int loc)
+{
+   location = loc;
+}
