@@ -14,6 +14,7 @@ void Assembler::assemble(const std::string &fileName)
    
    int numArgsNeeded = 0;
    bool needComma = false;
+   unsigned int curMemLoc = 0;
    for(unsigned int i = 0; i < tokens.size(); i++)
    {
       if(needComma)
@@ -34,7 +35,7 @@ void Assembler::assemble(const std::string &fileName)
          std::string label = tokens[i].substr(0, tokens[i].size() - 1);
          if(label.size())
          {
-            labels.push_back(CodeLabel(label, 0));
+            labels.push_back(CodeLabel(label, curMemLoc));
          }
          else
          {
@@ -70,6 +71,11 @@ void Assembler::assemble(const std::string &fileName)
             {
                std::cout<<"Error, instruction expected\n";
             }
+            else
+            {
+               // Found an instruction, update the memory location
+               curMemLoc += 2;
+            }
          }
       }
    }
@@ -81,7 +87,7 @@ void Assembler::assemble(const std::string &fileName)
 
    for(unsigned int i = 0; i < labels.size(); i++)
    {
-      std::cout<<labels[i].getLabelName()<<std::endl;
+      std::cout<<labels[i].getLabelName()<<" "<<labels[i].getLocation()<<std::endl;
    }
 }
 
