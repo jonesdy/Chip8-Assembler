@@ -1,30 +1,29 @@
 #include "CodeLabel.hpp"
 
-CodeLabel::CodeLabel(unsigned short memLoc, char *l)
+CodeLabel::CodeLabel()
 {
-
-   memLocation = memLoc;
-   label = l;
-
+   labelName = "unknown";
+   location = 0;
 }
 
-unsigned short CodeLabel::getMemLocation()
+CodeLabel::CodeLabel(std::string label, unsigned int loc)
 {
-
-   return memLocation;
-
+   labelName = label;
+   location = loc;
 }
 
-char *CodeLabel::getLabel()
+void CodeLabel::create(std::string label, unsigned int loc)
 {
-
-   return label;
-
+   labelName = label;
+   location = loc;
 }
 
-CodeLabel::~CodeLabel()
+std::string CodeLabel::getLabelName()
 {
+   return labelName;
+}
 
-   delete[] label;
-
+unsigned int CodeLabel::getLocation()
+{
+   return location;
 }

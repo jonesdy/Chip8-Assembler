@@ -1,15 +1,19 @@
 #ifndef CODELABEL_HPP
 #define CODELABEL_HPP
 
+#include <string>
+
 class CodeLabel
 {
-   unsigned short memLocation;
-   char *label;
 public:
-   CodeLabel(unsigned short memLoc, char *l);
-   unsigned short getMemLocation();
-   char *getLabel();
-   ~CodeLabel();
+   CodeLabel();
+   CodeLabel(std::string label, unsigned int loc);
+   void create(std::string label, unsigned int loc);
+   std::string getLabelName();
+   unsigned int getLocation();
+private:
+   std::string labelName;
+   unsigned int location;
 };
 
 #endif
