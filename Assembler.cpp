@@ -11,39 +11,65 @@ void Assembler::assemble(std::string fileName)
 
    std::string line;
    std::vector<std::string> tokens;
-   bool hasComment;
    while(input.good())
    {
-      hasComment = false;
       std::getline(input, line);
-      tokens = split(line, ' ');    // Split with spaces first
-      for(unsigned int i = 0; i < tokens.size() && !hasComment; i++)
+      std::vector<std::string> lineTokens = split(line);    // Split the line
+      for(unsigned int i = 0; i < lineTokens.size(); i++)
       {
-         std::cout<<tokens[i]<<" ";
-         // If we find a comment, we need to stop assembling this line
-         if(tokens[i].find(';') != std::string::npos)
-            hasComment = true;
+         tokens.push_back(lineTokens[i]);
       }
-      std::cout<<std::endl;
    }
-}
 
-// Seriously, no decent string tokenizers in STL?
-// Thanks https://stackoverflow.com/questions/236129/how-to-split-a-string-in-c
-std::vector<std::string> &Assembler::split(const std::string &s, char delim, std::vector<std::string> &elems)
-{
-   std::stringstream ss(s);
-   std::string item;
-   while(std::getline(ss, item, delim))
+   for(unsigned int i = 0; i < tokens.size(); i++)
    {
-      elems.push_back(item);
+      std::cout<<tokens[i]<<" ";
    }
-   return elems;
+   std::cout<<std::endl;
 }
 
-std::vector<std::string> Assembler::split(const std::string &s, char delim)
+std::vector<std::string> Assembler::split(const std::string &s)
 {
-   std::vector<std::string> elems;
-   split(s, delim, elems);
-   return elems;
+   // Split up the line with spaces and commas
+   // Don't return anything after a semi-colon
+   std::vector<std::string> tokens;
+   std::string currentToken = "";
+   for(unsigned int i = 0; i < s.length(); i++)
+   {
+      if(s[i] == ';')
+      {
+         // Found a comment, don't need to continue on this line
+         if(currentToken.length() > 0)
+         {
+            tokens.push_back(currentToken);
+         }
+         return tokens;
+      }
+      else if(s[i] == ',')
+      {
+         // If there's a comma, put it into its own token and continue
+         if(currentToken.length() > 0)
+         {
+            tokens.push_back(currentToken);
+            currentToken = "";
+         }
+         tokens.push_back(",");
+      }
+      else if((s[i] != ' ') && (s[i] != '\t') && (s[i] != '\n') && (s[i] != '\r'))
+      {
+         currentToken += s[i];
+      }
+      else if(currentToken.length() > 0)
+      {
+         tokens.push_back(currentToken);
+         currentToken = "";
+      }
+   }
+
+   if(currentToken.length() > 0)
+   {
+      tokens.push_back(currentToken);
+   }
+
+   return tokens;
 }

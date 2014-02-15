@@ -43,6 +43,8 @@ example:			; Label
 	
 	rnd vx ,
 	vy				; Should be fine
+
+   draw vx,vn,n   ; Should be fine
 	
 	;no vx, vy		; Should fail
 	
