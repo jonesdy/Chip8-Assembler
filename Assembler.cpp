@@ -176,10 +176,36 @@ void Assembler::assemble(const std::string &fileName)
          else if(!tokens[ti].compare("ind"))
          {
             // Sets I to address NNN, ANNN
+            std::string arg = tokens[++ti];
+            // Should be a code label
+            int loc = getLabelLocation(arg);
+            if(loc == -1)
+            {
+               error = true;
+               std::cout<<"Label "<<arg<<" does not exist."<<std::endl;
+            }
+            else
+            {
+               opcode = 0xA000 | (loc & 0x0FFF);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("jmp0"))
          {
-            // Jumps to the address NNN plus V0, BNN
+            // Jumps to the address NNN plus V0, BNNN
+            std::string arg = tokens[++ti];
+            // Should be a code label
+            int loc = getLabelLocation(arg);
+            if(loc == -1)
+            {
+               error = true;
+               std::cout<<"Label "<<arg<<" does not exist."<<std::endl;
+            }
+            else
+            {
+               opcode = 0xB000 | (loc & 0x0FFF);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("kse"))
          {
@@ -304,7 +330,6 @@ void Assembler::assemble(const std::string &fileName)
             else
             {
                opcode = 0x8006 | (reg1 << 8) | (reg2 << 4);
-               std::cout<<std::hex<<"0x"<<opcode<<std::endl;
             }
             ti++;
          }
@@ -333,7 +358,6 @@ void Assembler::assemble(const std::string &fileName)
             else
             {
                opcode = 0x800E | (reg1 << 8) | (reg2 << 4);
-               std::cout<<std::hex<<"0x"<<opcode<<std::endl;
             }
             ti++;
          }
