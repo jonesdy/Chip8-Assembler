@@ -31,7 +31,7 @@ void Assembler::assemble(const std::string &fileName)
       {
          if(numArgsNeeded != 0)
          {
-            std::cout<<"Error, expected argument\n";
+            std::cout<<"Error, expected argument"<<std::endl;
             error = true;
          }
          // Found a code label, add it
@@ -44,13 +44,13 @@ void Assembler::assemble(const std::string &fileName)
             }
             else
             {
-               std::cout<<"Error, duplicate label\n";
+               std::cout<<"Error, duplicate label"<<std::endl;
                error = true;
             }
          }
          else
          {
-            std::cout<<"Error, empty label\n";
+            std::cout<<"Error, empty label"<<std::endl;
             error = true;
          }
       }
@@ -61,7 +61,7 @@ void Assembler::assemble(const std::string &fileName)
             // Make sure the next token isn't an instruction
             if(getNumArgs(tokens[i]) != -1)
             {
-               std::cout<<"Error, argument expected\n";
+               std::cout<<"Error, argument expected"<<std::endl;
                error = true;
             }
             else
@@ -82,7 +82,7 @@ void Assembler::assemble(const std::string &fileName)
             numArgsNeeded = getNumArgs(tokens[i]);
             if(numArgsNeeded == -1)
             {
-               std::cout<<"Error, instruction expected\n";
+               std::cout<<"Error, instruction expected"<<std::endl;
                error = true;
             }
             else
@@ -96,7 +96,7 @@ void Assembler::assemble(const std::string &fileName)
 
    if(numArgsNeeded)
    {
-      std::cout<<"Error, argument expected\n";
+      std::cout<<"Error, argument expected"<<std::endl;
       error = true;
    }
 
@@ -107,7 +107,7 @@ void Assembler::assemble(const std::string &fileName)
 
    if(error)
    {
-      std::cout<<"ERROR: Assembly failed (see above)\n";
+      std::cout<<"ERROR: Assembly failed (see above)"<<std::endl;
    }
    else
    {
@@ -159,16 +159,19 @@ void Assembler::assemble(const std::string &fileName)
          else if(!tokens[ti].compare("call"))
          {
             // Call subroutine at NNN, 2NNN
-         }
-         else if(!tokens[ti].compare("shr"))
-         {
-            // Shift vx right by 1, VF is set to the value of the LSB of VX before shift
-            // 8XY6
-         }
-         else if(!tokens[ti].compare("shl"))
-         {
-            // Shift vx left by 1, VF is set to the value of the MSB of VX before shift
-            // 8XYE
+            std::string arg = tokens[++ti];
+            // Should be a code label
+            int loc = getLabelLocation(arg);
+            if(loc == -1)
+            {
+               error = true;
+               std::cout<<"Label "<<arg<<" does not exist."<<std::endl;
+            }
+            else
+            {
+               opcode = 0x1000 | (loc & 0x0FFF);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("ind"))
          {
@@ -276,6 +279,64 @@ void Assembler::assemble(const std::string &fileName)
             // Sets VX to a random number and NN
             // CXNN
          }
+         else if(!tokens[ti].compare("shr"))
+         {
+            // Shift vy right by 1 and store in vx
+            // VF is set to the value of the LSB of VX before shift
+            // 8XY6
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid register"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8006 | (reg1 << 8) | (reg2 << 4);
+               std::cout<<std::hex<<"0x"<<opcode<<std::endl;
+            }
+            ti++;
+         }
+         else if(!tokens[ti].compare("shl"))
+         {
+            // Shift vy left by 1 and store in vx
+            // VF is set to the value of the MSB of VX before shift
+            // 8XYE
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x800E | (reg1 << 8) | (reg2 << 4);
+               std::cout<<std::hex<<"0x"<<opcode<<std::endl;
+            }
+            ti++;
+         }
          else if(!tokens[ti].compare("draw"))
          {
             // Draw sprites at coordinates VX, VY, with a height of N, width of 8,
@@ -284,7 +345,7 @@ void Assembler::assemble(const std::string &fileName)
          }
          else
          {
-            std::cout<<"Error\n";
+            std::cout<<"Error"<<std::endl;
             error = true;
          }
 
@@ -380,19 +441,18 @@ int Assembler::getNumArgs(const std::string &in)
    {
       return 0;
    }
-   else if(!(in.compare("jmp") && in.compare("call") && in.compare("shr") &&
-            in.compare("shl") && in.compare("ind") && in.compare("jmp0") &&
-            in.compare("kse") && in.compare("ksn") && in.compare("del") &&
-            in.compare("wkp") && in.compare("setd") && in.compare("sets") &&
-            in.compare("adi") && in.compare("spr") && in.compare("sbi") &&
-            in.compare("sto") && in.compare("fil")))
+   else if(!(in.compare("jmp") && in.compare("call") && in.compare("ind") &&
+            in.compare("jmp0") && in.compare("kse") && in.compare("ksn") &&
+            in.compare("del") && in.compare("wkp") && in.compare("setd") &&
+            in.compare("sets") && in.compare("adi") && in.compare("spr") &&
+            in.compare("sbi") && in.compare("sto") && in.compare("fil")))
    {
       return 1;
    }
    else if(!(in.compare("se") && in.compare("sne") && in.compare("set") &&
             in.compare("add") && in.compare("or") && in.compare("and") &&
             in.compare("xor") && in.compare("sub") && in.compare("subx") &&
-            in.compare("rnd")))
+            in.compare("rnd") && in.compare("shr") && in.compare("shl")))
    {
       return 2;
    }
@@ -423,4 +483,51 @@ int Assembler::getLabelLocation(const std::string &label)
    }
 
    return -1;
+}
+
+int Assembler::getRegister(const std::string &reg)
+{
+   // Should be V0 - VF
+   if((reg.size() != 2) || (reg[0] != 'v'))
+   {
+      return -1;
+   }
+   
+   switch(reg[1])
+   {
+      case '0':
+         return 0;
+      case '1':
+         return 1;
+      case '2':
+         return 2;
+      case '3':
+         return 3;
+      case '4':
+         return 4;
+      case '5':
+         return 5;
+      case '6':
+         return 6;
+      case '7':
+         return 7;
+      case '8':
+         return 8;
+      case '9':
+         return 9;
+      case 'a':
+         return 0xA;
+      case 'b':
+         return 0xB;
+      case 'c':
+         return 0xC;
+      case 'd':
+         return 0xD;
+      case 'e':
+         return 0xE;
+      case 'f':
+         return 0xF;
+      default:
+         return -1;
+   }
 }

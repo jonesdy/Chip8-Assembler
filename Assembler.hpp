@@ -19,6 +19,7 @@ private:
    int getNumArgs(const std::string &in);
    bool isCodeLabel(const std::string &s);
    int getLabelLocation(const std::string &label);
+   int getRegister(const std::string &reg);
    std::vector<std::string> tokens;
    std::vector<CodeLabel> labels;
 };

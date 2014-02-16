@@ -7,8 +7,8 @@ example2:
    ;jmp nnn			; Jump to nnn, nnn can also be a label
 example4:
 	call example70 ; Call subroutine at nnn
-	shr vx			; Shift vx right by one
-	shl vx			; Shift vx left by one
+	shr v3, ve		; Shift vy right by one and store it in vx
+	shl ve, v3		; Shift vy left by one and store it in vx
 	ind nnn			; Sets I to the address NNN
 	jmp0 nnn		; Jumps to the address NNN plus V0
 	kse vx			; Skips the next instruction if the key stored in vx is pressed
