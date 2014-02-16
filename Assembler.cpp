@@ -119,7 +119,7 @@ void Assembler::assemble(const std::string &fileName)
       }
 
       unsigned int ti = 0;
-      for(unsigned int i = 0; i < curMemLoc + 2; i += 2)
+      for(unsigned int i = 0; i < curMemLoc + 2 && !error; i += 2)
       {
          if(isCodeLabel(tokens[ti]))
          {
@@ -166,9 +166,12 @@ void Assembler::assemble(const std::string &fileName)
       }
 
       // Write the memory to the file
-      std::ofstream output((fileName + ".bin").c_str(), std::ofstream::binary);
-      output.write((char*)memory, curMemLoc + 2);
-      output.close();
+      if(!error)
+      {
+         std::ofstream output((fileName + ".bin").c_str(), std::ofstream::binary);
+         output.write((char*)memory, curMemLoc + 2);
+         output.close();
+      }
    }
 }
 
