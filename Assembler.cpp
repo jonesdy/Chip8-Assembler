@@ -15,31 +15,43 @@ void Assembler::assemble(const std::string &fileName)
    int numArgsNeeded = 0;
    bool needComma = false;
    unsigned int curMemLoc = 0;
-   for(unsigned int i = 0; i < tokens.size(); i++)
+   bool error = false;
+   for(unsigned int i = 0; i < tokens.size() && !error; i++)
    {
       if(needComma)
       {
          if(tokens[i].compare(","))
          {
-            std::cout<<"Expected ','"<<std::endl;
+            std::cout<<"Error, expected ','"<<std::endl;
+            error = true;
          }
          needComma = false;
       }
-      else if(tokens[i][tokens[i].size() - 1] == ':')
+      else if(isCodeLabel(tokens[i]))
       {
          if(numArgsNeeded != 0)
          {
             std::cout<<"Error, expected argument\n";
+            error = true;
          }
          // Found a code label, add it
          std::string label = tokens[i].substr(0, tokens[i].size() - 1);
          if(label.size())
          {
-            labels.push_back(CodeLabel(label, curMemLoc));
+            if(getLabelLocation(label) == -1)
+            {
+               labels.push_back(CodeLabel(label, curMemLoc));
+            }
+            else
+            {
+               std::cout<<"Error, duplicate label\n";
+               error = true;
+            }
          }
          else
          {
             std::cout<<"Error, empty label\n";
+            error = true;
          }
       }
       else
@@ -50,6 +62,7 @@ void Assembler::assemble(const std::string &fileName)
             if(getNumArgs(tokens[i]) != -1)
             {
                std::cout<<"Error, argument expected\n";
+               error = true;
             }
             else
             {
@@ -70,6 +83,7 @@ void Assembler::assemble(const std::string &fileName)
             if(numArgsNeeded == -1)
             {
                std::cout<<"Error, instruction expected\n";
+               error = true;
             }
             else
             {
@@ -83,11 +97,78 @@ void Assembler::assemble(const std::string &fileName)
    if(numArgsNeeded)
    {
       std::cout<<"Error, argument expected\n";
+      error = true;
    }
 
    for(unsigned int i = 0; i < labels.size(); i++)
    {
       std::cout<<labels[i].getLabelName()<<" "<<labels[i].getLocation()<<std::endl;
+   }
+
+   if(error)
+   {
+      std::cout<<"ERROR: Assembly failed (see above)\n";
+   }
+   else
+   {
+      // Time to actually do some assembly
+      unsigned char memory[curMemLoc + 2];
+      for(unsigned int i = 0; i < curMemLoc + 2; i++)
+      {
+         memory[i] = 0;
+      }
+
+      unsigned int ti = 0;
+      for(unsigned int i = 0; i < curMemLoc + 2; i += 2)
+      {
+         if(isCodeLabel(tokens[ti]))
+         {
+            // Skip past code labels
+            ti++;
+         }
+         if(!tokens[ti].compare("clr"))
+         {
+            // Clear, 00E0
+            memory[i] = 0x00;
+            memory[i + 1] = 0xE0;
+            ti++;
+         }
+         else if(!tokens[ti].compare("ret"))
+         {
+            // Return, 00EE
+            memory[i] = 0x00;
+            memory[i + 1] = 0xEE;
+            ti++;
+         }
+         else if(!tokens[ti].compare("jmp"))
+         {
+            // Jump, 1NNN
+            std::string arg = tokens[++ti];
+            // Should be a code label
+            int loc = getLabelLocation(arg);
+            if(loc == -1)
+            {
+               error = true;
+               std::cout<<"Label "<<arg<<" does not exist."<<std::endl;
+            }
+            else
+            {
+               unsigned short opcode = 0x1000 | (loc & 0x0FFF);
+               memory[i] = (opcode & 0xFF00) >> 8;
+               memory[i + 1] = opcode & 0x00FF;
+            }
+            ti++;
+         }
+         else
+         {
+            ti++;
+         }
+      }
+
+      // Write the memory to the file
+      std::ofstream output((fileName + ".bin").c_str(), std::ofstream::binary);
+      output.write((char*)memory, curMemLoc + 2);
+      output.close();
    }
 }
 
@@ -191,4 +272,22 @@ int Assembler::getNumArgs(const std::string &in)
       // Instruction doesn't exist
       return -1;
    }
+}
+
+bool Assembler::isCodeLabel(const std::string &s)
+{
+   return(s[s.size() - 1] == ':');
+}
+
+int Assembler::getLabelLocation(const std::string &label)
+{
+   for(unsigned int i = 0; i < labels.size(); i++)
+   {
+      if(!label.compare(labels[i].getLabelName()))
+      {
+         return labels[i].getLocation();
+      }
+   }
+
+   return -1;
 }

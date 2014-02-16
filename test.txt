@@ -3,7 +3,8 @@ example:			; Label
 	clr				; Clear screen
 example2:
 	ret				; Return from subroutine
-	jmp nnn			; Jump to nnn, nnn can also be a label
+   jmp example72  ; Jump to code label
+   ;jmp nnn			; Jump to nnn, nnn can also be a label
 example6:
 	call example	; Call subroutine at nnn
 	shr vx			; Shift vx right by one

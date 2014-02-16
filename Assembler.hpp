@@ -17,6 +17,8 @@ private:
    void parse(const std::string &fileName);
    std::vector<std::string> split(const std::string &s);
    int getNumArgs(const std::string &in);
+   bool isCodeLabel(const std::string &s);
+   int getLabelLocation(const std::string &label);
    std::vector<std::string> tokens;
    std::vector<CodeLabel> labels;
 };
