@@ -2,11 +2,11 @@
 example:			; Label
 	clr				; Clear screen
 example2:
-	ret				; Return from subroutine
-   jmp example72  ; Jump to code label
+	;ret				; Return from subroutine
+   jmp example4  ; Jump to code label
    ;jmp nnn			; Jump to nnn, nnn can also be a label
-example6:
-	call example	; Call subroutine at nnn
+example4:
+	call example70 ; Call subroutine at nnn
 	shr vx			; Shift vx right by one
 	shl vx			; Shift vx left by one
 	ind nnn			; Sets I to the address NNN
@@ -39,7 +39,9 @@ example6:
 	draw vx, vy, n	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I
 	ret
    clr;This should still find clr, but ignore the rest
-example72:
+example70:
+   clr
+   ret
 	
 	draw vx,
 	vn,

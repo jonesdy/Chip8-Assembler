@@ -121,6 +121,7 @@ void Assembler::assemble(const std::string &fileName)
       unsigned int ti = 0;
       for(unsigned int i = 0; i < curMemLoc + 2 && !error; i += 2)
       {
+         unsigned short opcode = 0;
          if(isCodeLabel(tokens[ti]))
          {
             // Skip past code labels
@@ -142,7 +143,7 @@ void Assembler::assemble(const std::string &fileName)
          }
          else if(!tokens[ti].compare("jmp"))
          {
-            // Jump, 1NNN
+            // Jump to NNN, 1NNN
             std::string arg = tokens[++ti];
             // Should be a code label
             int loc = getLabelLocation(arg);
@@ -153,15 +154,146 @@ void Assembler::assemble(const std::string &fileName)
             }
             else
             {
-               unsigned short opcode = 0x1000 | (loc & 0x0FFF);
-               memory[i] = (opcode & 0xFF00) >> 8;
-               memory[i + 1] = opcode & 0x00FF;
+               opcode = 0x1000 | (loc & 0x0FFF);
             }
             ti++;
          }
+         else if(!tokens[ti].compare("call"))
+         {
+            // Call subroutine at NNN, 2NNN
+         }
+         else if(!tokens[ti].compare("shr"))
+         {
+            // Shift vx right by 1, VF is set to the value of the LSB of VX before shift
+            // 8XY6
+         }
+         else if(!tokens[ti].compare("shl"))
+         {
+            // Shift vx left by 1, VF is set to the value of the MSB of VX before shift
+            // 8XYE
+         }
+         else if(!tokens[ti].compare("ind"))
+         {
+            // Sets I to address NNN, ANNN
+         }
+         else if(!tokens[ti].compare("jmp0"))
+         {
+            // Jumps to the address NNN plus V0, BNN
+         }
+         else if(!tokens[ti].compare("kse"))
+         {
+            // Skips the next instruction if the key stored in VX is pressed
+            // EX9E
+         }
+         else if(!tokens[ti].compare("ksn"))
+         {
+            // Skips the next instruction if the key stored in VX isn't pressed
+            // EXA1
+         }
+         else if(!tokens[ti].compare("del"))
+         {
+            // Sets VX to the value of the delay timer, FX07
+         }
+         else if(!tokens[ti].compare("wkp"))
+         {
+            // A key press is awaited, and then stored in VX, FX0A
+         }
+         else if(!tokens[ti].compare("setd"))
+         {
+            // Sets the delay timer to VX, FX15
+         }
+         else if(!tokens[ti].compare("sets"))
+         {
+            // Sets the sound timer to VX, FX18
+         }
+         else if(!tokens[ti].compare("adi"))
+         {
+            // Adds VX to I, FX1E
+         }
+         else if(!tokens[ti].compare("spr"))
+         {
+            // Sets I to the location of the sprite for the character in VX
+            // FX29
+         }
+         else if(!tokens[ti].compare("sbi"))
+         {
+            // Stores the binary-coded decimal respresentation of VX at I, I + 1, and I + 2
+            // FX33
+         }
+         else if(!tokens[ti].compare("sto"))
+         {
+            // Stores V0 to VX in memory starting at address I, FX55
+         }
+         else if(!tokens[ti].compare("fil"))
+         {
+            // Fills V0 to VX with values from memory starting at address I, FX65
+         }
+         else if(!tokens[ti].compare("se"))
+         {
+            // Skips the next instruction if vx == nn, or if vx == vy
+            // 3XNN or 5XY0
+         }
+         else if(!tokens[ti].compare("sne"))
+         {
+            // Skips the next instruction if vx != nn, or if vx != vy
+            // 4XNN or 9XY0
+         }
+         else if(!tokens[ti].compare("set"))
+         {
+            // Sets VX to NN, or VX to the value of VY
+            // 6XNN or 8XY0
+         }
+         else if(!tokens[ti].compare("add"))
+         {
+            // Adds NN to VX, or VX += VY
+            // 7XNN or 8XY4
+         }
+         else if(!tokens[ti].compare("or"))
+         {
+            // VX = VX | VY
+            // 8XY1
+         }
+         else if(!tokens[ti].compare("and"))
+         {
+            // VX = VX & VY
+            // 8XY2
+         }
+         else if(!tokens[ti].compare("xor"))
+         {
+            // VX = VX ^ VY
+            // 8XY3
+         }
+         else if(!tokens[ti].compare("sub"))
+         {
+            // VX -= VY
+            // 8XY5
+         }
+         else if(!tokens[ti].compare("subx"))
+         {
+            // VX = VY - VX
+            // 8XY7
+         }
+         else if(!tokens[ti].compare("rnd"))
+         {
+            // Sets VX to a random number and NN
+            // CXNN
+         }
+         else if(!tokens[ti].compare("draw"))
+         {
+            // Draw sprites at coordinates VX, VY, with a height of N, width of 8,
+            // sprite starts at I
+            // DXYN
+         }
          else
          {
-            ti++;
+            std::cout<<"Error\n";
+            error = true;
+         }
+
+         if(!error)
+         {
+            memory[i] = (opcode & 0xFF00) >> 8;
+            memory[i + 1] = opcode & 0x00FF;
          }
       }
 
