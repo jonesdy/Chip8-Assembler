@@ -130,15 +130,13 @@ void Assembler::assemble(const std::string &fileName)
          if(!tokens[ti].compare("clr"))
          {
             // Clear, 00E0
-            memory[i] = 0x00;
-            memory[i + 1] = 0xE0;
+            opcode = 0x00E0;
             ti++;
          }
          else if(!tokens[ti].compare("ret"))
          {
             // Return, 00EE
-            memory[i] = 0x00;
-            memory[i + 1] = 0xEE;
+            opcode = 0x00EE;
             ti++;
          }
          else if(!tokens[ti].compare("jmp"))
