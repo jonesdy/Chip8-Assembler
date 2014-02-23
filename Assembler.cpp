@@ -112,7 +112,7 @@ void Assembler::assemble(const std::string &fileName)
    else
    {
       // Time to actually do some assembly
-      unsigned char memory[curMemLoc + 2];
+      unsigned char *memory = new unsigned char[curMemLoc + 2];
       for(unsigned int i = 0; i < curMemLoc + 2; i++)
       {
          memory[i] = 0;
@@ -387,6 +387,8 @@ void Assembler::assemble(const std::string &fileName)
          output.write((char*)memory, curMemLoc + 2);
          output.close();
       }
+
+      delete[] memory;
    }
 }
 
