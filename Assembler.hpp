@@ -21,6 +21,7 @@ private:
    int getLabelLocation(const std::string &label);
    int getRegister(const std::string &reg);
    int getConstant(const std::string &con);
+   int getHexFromChar(const char c);
    std::vector<std::string> tokens;
    std::vector<CodeLabel> labels;
 };

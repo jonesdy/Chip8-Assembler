@@ -953,43 +953,9 @@ int Assembler::getRegister(const std::string &reg)
    {
       return -1;
    }
-   
-   switch(reg[1])
+   else
    {
-      case '0':
-         return 0;
-      case '1':
-         return 1;
-      case '2':
-         return 2;
-      case '3':
-         return 3;
-      case '4':
-         return 4;
-      case '5':
-         return 5;
-      case '6':
-         return 6;
-      case '7':
-         return 7;
-      case '8':
-         return 8;
-      case '9':
-         return 9;
-      case 'a':
-         return 0xA;
-      case 'b':
-         return 0xB;
-      case 'c':
-         return 0xC;
-      case 'd':
-         return 0xD;
-      case 'e':
-         return 0xE;
-      case 'f':
-         return 0xF;
-      default:
-         return -1;
+      return getHexFromChar(reg[1]);
    }
 }
 
@@ -1003,152 +969,26 @@ int Assembler::getConstant(const std::string &con)
 
    if(con.size() == 1)
    {
-      switch(con[0])
-      {
-      case '0':
-         return 0;
-      case '1':
-         return 1;
-      case '2':
-         return 2;
-      case '3':
-         return 3;
-      case '4':
-         return 4;
-      case '5':
-         return 5;
-      case '6':
-         return 6;
-      case '7':
-         return 7;
-      case '8':
-         return 8;
-      case '9':
-         return 9;
-      case 'a':
-         return 0xA;
-      case 'b':
-         return 0xB;
-      case 'c':
-         return 0xC;
-      case 'd':
-         return 0xD;
-      case 'e':
-         return 0xE;
-      case 'f':
-         return 0xF;
-      default:
-         return -1;
-      }
+      return getHexFromChar(con[0]);
    }
    else
    {
-      int num = 0;
-      switch(con[0])
-      {
-      case '0':
-         break;
-      case '1':
-         num += 0x10;
-         break;
-      case '2':
-         num += 0x20;
-         break;
-      case '3':
-         num += 0x30;
-         break;
-      case '4':
-         num += 0x40;
-         break;
-      case '5':
-         num += 0x50;
-         break;
-      case '6':
-         num += 0x60;
-         break;
-      case '7':
-         num += 0x70;
-         break;
-      case '8':
-         num += 0x80;
-         break;
-      case '9':
-         num += 0x90;
-         break;
-      case 'a':
-         num += 0xA0;
-         break;
-      case 'b':
-         num += 0xB0;
-         break;
-      case 'c':
-         num += 0xC0;
-         break;
-      case 'd':
-         num += 0xD0;
-         break;
-      case 'e':
-         num += 0xE0;
-         break;
-      case 'f':
-         num += 0xF0;
-         break;
-      default:
-         return -1;
-      }
-      
-      switch(con[1])
-      {
-      case '0':
-         break;
-      case '1':
-         num += 0x01;
-         break;
-      case '2':
-         num += 0x02;
-         break;
-      case '3':
-         num += 0x03;
-         break;
-      case '4':
-         num += 0x04;
-         break;
-      case '5':
-         num += 0x05;
-         break;
-      case '6':
-         num += 0x06;
-         break;
-      case '7':
-         num += 0x07;
-         break;
-      case '8':
-         num += 0x08;
-         break;
-      case '9':
-         num += 0x09;
-         break;
-      case 'a':
-         num += 0x0A;
-         break;
-      case 'b':
-         num += 0x0B;
-         break;
-      case 'c':
-         num += 0x0C;
-         break;
-      case 'd':
-         num += 0x0D;
-         break;
-      case 'e':
-         num += 0x0E;
-         break;
-      case 'f':
-         num += 0x0F;
-         break;
-      default:
-         return -1;
-      }
-      return num;
+      return ((getHexFromChar(con[0]) * 16) + getHexFromChar(con[1]));
+   }
+}
+
+int Assembler::getHexFromChar(const char c)
+{
+   if((c >= '0') && (c <= '9'))
+   {
+      return (c - '0');
+   }
+   else if((c >= 'a') && (c <= 'f'))
+   {
+      return ((c - 'a') + 10);
+   }
+   else if((c >= 'A') && (c <= 'F'))
+   {
+      return ((c - 'A') + 10);
    }
 }
