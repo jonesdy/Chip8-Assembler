@@ -802,6 +802,33 @@ void Assembler::assemble(const std::string &fileName)
             }
             ti++;
          }
+         else if(!tokens[ti].compare("dw"))
+         {
+            // Define word, just put the word into memory
+            std::string arg = tokens[++ti];
+
+            // Should be a constant
+            if(arg.size() != 4)
+            {
+               // Invalid size, this can be fixed later
+               std::cout<<"Arg "<<arg<<" is not a word (2 bytes)"<<std::endl;
+            }
+            else
+            {
+               int num1 = getHexFromChar(arg[0]);
+               int num2 = getHexFromChar(arg[1]);
+               int num3 = getHexFromChar(arg[2]);
+               int num4 = getHexFromChar(arg[3]);
+               if((num1 == -1) || (num2 == -1) || (num3 == -1) || (num4 == -1))
+               {
+                  std::cout<<"Arg "<<arg<<" is not a valid constant"<<std::endl;
+               }
+               else
+               {
+                  opcode = (num1 << 12) | (num2 << 8) | (num3 << 4) | num4;
+               }
+            }
+         }
          else
          {
             std::cout<<"Error with token "<<tokens[ti]<<std::endl;
@@ -842,12 +869,6 @@ void Assembler::parse(const std::string &fileName)
          tokens.push_back(lineTokens[i]);
       }
    }
-
-   /*for(unsigned int i = 0; i < tokens.size(); i++)
-   {
-      std::cout<<tokens[i]<<" ";
-   }
-   std::cout<<std::endl;*/
 }
 
 std::vector<std::string> Assembler::split(const std::string &s)
@@ -906,7 +927,8 @@ int Assembler::getNumArgs(const std::string &in)
             in.compare("jmp0") && in.compare("kse") && in.compare("ksn") &&
             in.compare("del") && in.compare("wkp") && in.compare("setd") &&
             in.compare("sets") && in.compare("adi") && in.compare("spr") &&
-            in.compare("sbi") && in.compare("sto") && in.compare("fil")))
+            in.compare("sbi") && in.compare("sto") && in.compare("fil") && 
+            in.compare("dw")))
    {
       return 1;
    }
@@ -973,7 +995,25 @@ int Assembler::getConstant(const std::string &con)
    }
    else
    {
-      return ((getHexFromChar(con[0]) * 16) + getHexFromChar(con[1]));
+      int num1 = getHexFromChar(con[0]);
+      if(num1 != -1)
+      {
+         int num2 = getHexFromChar(con[1]);
+         if(num2 != -1)
+         {
+            return ((num1 * 16) + num2);
+         }
+         else
+         {
+            // Not valid
+            return -1;
+         }
+      }
+      else
+      {
+         // Not valid
+         return -1;
+      }
    }
 }
 
@@ -990,5 +1030,10 @@ int Assembler::getHexFromChar(const char c)
    else if((c >= 'A') && (c <= 'F'))
    {
       return ((c - 'A') + 10);
+   }
+   else
+   {
+      // Not valid
+      return -1;
    }
 }

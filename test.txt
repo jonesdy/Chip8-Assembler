@@ -37,3 +37,4 @@ example4:
 	subx v4, v9		; vx = vy - vx
 	rnd v3, ce		; Sets vx to a random number and nn
 	draw v3, v6, 8	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I
+	dw 9fc2			; Define word
