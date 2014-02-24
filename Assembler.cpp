@@ -40,7 +40,7 @@ void Assembler::assemble(const std::string &fileName)
          {
             if(getLabelLocation(label) == -1)
             {
-               labels.push_back(CodeLabel(label, curMemLoc));
+               labels.push_back(CodeLabel(label, curMemLoc + PROGRAM_START));
             }
             else
             {

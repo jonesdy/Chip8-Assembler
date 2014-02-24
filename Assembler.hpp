@@ -14,6 +14,7 @@ class Assembler
 public:
    Assembler();
    void assemble(const std::string &fileName);
+   static const int PROGRAM_START = 512;
 private:
    void parse(const std::string &fileName);
    std::vector<std::string> split(const std::string &s);
