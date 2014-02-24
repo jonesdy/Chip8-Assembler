@@ -11,20 +11,20 @@ example4:
 	shl ve, v3		; Shift vy left by one and store it in vx
 	ind example2	; Sets I to the address NNN
 	jmp0 example4	; Jumps to the address NNN plus V0
-	kse vx			; Skips the next instruction if the key stored in vx is pressed
-	ksn vx			; Skips the next instruction if the key stored in vx isn't pressed
-	del vx			; Sets vx to the value of the delay timer
-	wkp vx			; A key press is awaited, and then stored in vx
-	setd vx			; Sets the delay timer to vx
-	sets vx			; Sets the sound timer to vx
-	adi vx			; Adds xv to I
-	spr vx			; Sets I to the location of the sprite for the character in vx
-	sbi vx			; Stores the binary-coded decimal representation of VX at I, I + 1, and I + 2
-	sto vx			; Stores v0 to vx in memory starting at address I
-	fil vx			; Fills vo to vx with values from memory starting at address I
-	se vx    , nn	; Skip the next instruction if vx == nn
+	kse v3			; Skips the next instruction if the key stored in vx is pressed
+	ksn v5			; Skips the next instruction if the key stored in vx isn't pressed
+	del v7			; Sets vx to the value of the delay timer
+	wkp v9			; A key press is awaited, and then stored in vx
+	setd vb			; Sets the delay timer to vx
+	sets vd			; Sets the sound timer to vx
+	adi vf			; Adds xv to I
+	spr va			; Sets I to the location of the sprite for the character in vx
+	sbi vc			; Stores the binary-coded decimal representation of VX at I, I + 1, and I + 2
+	sto ve			; Stores v0 to vx in memory starting at address I
+	fil v0			; Fills vo to vx with values from memory starting at address I
+	se v3    , 8f	; Skip the next instruction if vx == nn
+	se v5, v7		; Skip the next instruction if vx == vy
 	sne vx, nn		; Skip the next instruction if vx != nn
-	se vx, vy		; Skip the next instruction if vx == vy
 	set vx, nn		; Sets vx to nn
 	add vx, nn		; Adds nn to vx
 	set vx, vy		; Sets vx to the value of vy

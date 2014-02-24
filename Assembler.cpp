@@ -211,54 +211,229 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Skips the next instruction if the key stored in VX is pressed
             // EX9E
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xE09E | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("ksn"))
          {
             // Skips the next instruction if the key stored in VX isn't pressed
             // EXA1
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xE0A1 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("del"))
          {
             // Sets VX to the value of the delay timer, FX07
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF007 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("wkp"))
          {
             // A key press is awaited, and then stored in VX, FX0A
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF00A | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("setd"))
          {
             // Sets the delay timer to VX, FX15
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF015 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("sets"))
          {
             // Sets the sound timer to VX, FX18
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF018 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("adi"))
          {
             // Adds VX to I, FX1E
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF01E | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("spr"))
          {
             // Sets I to the location of the sprite for the character in VX
             // FX29
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF029 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("sbi"))
          {
             // Stores the binary-coded decimal respresentation of VX at I, I + 1, and I + 2
             // FX33
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF033 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("sto"))
          {
             // Stores V0 to VX in memory starting at address I, FX55
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF055 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("fil"))
          {
             // Fills V0 to VX with values from memory starting at address I, FX65
+            std::string arg = tokens[++ti];
+            // Should be a register
+            int reg = getRegister(arg);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xF065 | (reg << 8);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("se"))
          {
             // Skips the next instruction if vx == nn, or if vx == vy
             // 3XNN or 5XY0
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be a register
+            int reg1 = getRegister(arg1);
+            // Could be a register or a constant
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid register"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               // Must be a constant
+               int num = getConstant(arg2);
+               if(num == -1)
+               {
+                  error = true;
+                  std::cout<<"Arg "<<arg2<<" is not a valid register or constant"<<std::endl;
+               }
+               else
+               {
+                  opcode = 0x3000 | (reg1 << 8) | (num & 0x00FF);
+               }
+            }
+            else
+            {
+               opcode = 0x5000 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("sne"))
          {
@@ -555,5 +730,165 @@ int Assembler::getRegister(const std::string &reg)
          return 0xF;
       default:
          return -1;
+   }
+}
+
+int Assembler::getConstant(const std::string &con)
+{
+   // Read it in as a hex constant for now, can be changed later
+   if((con.size() != 1) && (con.size() != 2))
+   {
+      return -1;
+   }
+
+   if(con.size() == 1)
+   {
+      switch(con[0])
+      {
+      case '0':
+         return 0;
+      case '1':
+         return 1;
+      case '2':
+         return 2;
+      case '3':
+         return 3;
+      case '4':
+         return 4;
+      case '5':
+         return 5;
+      case '6':
+         return 6;
+      case '7':
+         return 7;
+      case '8':
+         return 8;
+      case '9':
+         return 9;
+      case 'a':
+         return 0xA;
+      case 'b':
+         return 0xB;
+      case 'c':
+         return 0xC;
+      case 'd':
+         return 0xD;
+      case 'e':
+         return 0xE;
+      case 'f':
+         return 0xF;
+      default:
+         return -1;
+      }
+   }
+   else
+   {
+      int num = 0;
+      switch(con[0])
+      {
+      case '0':
+         break;
+      case '1':
+         num += 0x10;
+         break;
+      case '2':
+         num += 0x20;
+         break;
+      case '3':
+         num += 0x30;
+         break;
+      case '4':
+         num += 0x40;
+         break;
+      case '5':
+         num += 0x50;
+         break;
+      case '6':
+         num += 0x60;
+         break;
+      case '7':
+         num += 0x80;
+         break;
+      case '8':
+         num += 0x80;
+         break;
+      case '9':
+         num += 0x90;
+         break;
+      case 'a':
+         num += 0xA0;
+         break;
+      case 'b':
+         num += 0xB0;
+         break;
+      case 'c':
+         num += 0xC0;
+         break;
+      case 'd':
+         num += 0xD0;
+         break;
+      case 'e':
+         num += 0xE0;
+         break;
+      case 'f':
+         num += 0xF0;
+         break;
+      default:
+         return -1;
+      }
+      
+      switch(con[1])
+      {
+      case '0':
+         break;
+      case '1':
+         num += 0x01;
+         break;
+      case '2':
+         num += 0x02;
+         break;
+      case '3':
+         num += 0x03;
+         break;
+      case '4':
+         num += 0x04;
+         break;
+      case '5':
+         num += 0x05;
+         break;
+      case '6':
+         num += 0x06;
+         break;
+      case '7':
+         num += 0x07;
+         break;
+      case '8':
+         num += 0x08;
+         break;
+      case '9':
+         num += 0x09;
+         break;
+      case 'a':
+         num += 0x0A;
+         break;
+      case 'b':
+         num += 0x0B;
+         break;
+      case 'c':
+         num += 0x0C;
+         break;
+      case 'd':
+         num += 0x0D;
+         break;
+      case 'e':
+         num += 0x0E;
+         break;
+      case 'f':
+         num += 0x0F;
+         break;
+      default:
+         return -1;
+      }
+      return num;
    }
 }

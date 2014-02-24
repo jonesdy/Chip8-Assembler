@@ -20,6 +20,7 @@ private:
    bool isCodeLabel(const std::string &s);
    int getLabelLocation(const std::string &label);
    int getRegister(const std::string &reg);
+   int getConstant(const std::string &con);
    std::vector<std::string> tokens;
    std::vector<CodeLabel> labels;
 };
