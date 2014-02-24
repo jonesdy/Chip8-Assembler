@@ -866,6 +866,8 @@ void Assembler::parse(const std::string &fileName)
       std::vector<std::string> lineTokens = split(line);    // Split the line
       for(unsigned int i = 0; i < lineTokens.size(); i++)
       {
+         // Lower all the tokens as well
+         toLower(lineTokens[i]);
          tokens.push_back(lineTokens[i]);
       }
    }
@@ -1027,13 +1029,14 @@ int Assembler::getHexFromChar(const char c)
    {
       return ((c - 'a') + 10);
    }
-   else if((c >= 'A') && (c <= 'F'))
-   {
-      return ((c - 'A') + 10);
-   }
    else
    {
       // Not valid
       return -1;
    }
+}
+
+void Assembler::toLower(std::string &in)
+{
+   std::transform(in.begin(), in.end(), in.begin(), tolower);
 }

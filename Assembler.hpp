@@ -1,6 +1,7 @@
 #ifndef ASSEMBLER_HPP
 #define ASSEMBLER_HPP
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -22,6 +23,7 @@ private:
    int getRegister(const std::string &reg);
    int getConstant(const std::string &con);
    int getHexFromChar(const char c);
+   void toLower(std::string &in);
    std::vector<std::string> tokens;
    std::vector<CodeLabel> labels;
 };

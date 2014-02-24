@@ -5,34 +5,34 @@ example2:
 	;ret				; Return from subroutine
    jmp example4  ; Jump to code label
    ;jmp nnn			; Jump to nnn, nnn can also be a label
-example4:
-	call example2   ; Call subroutine at nnn
+exaMple4:
+	call examplE2   ; Call subroutine at nnn
 	shr v3, ve		; Shift vy right by one and store it in vx
 	shl ve, v3		; Shift vy left by one and store it in vx
 	ind example2	; Sets I to the address NNN
 	jmp0 example4	; Jumps to the address NNN plus V0
 	kse v3			; Skips the next instruction if the key stored in vx is pressed
-	ksn v5			; Skips the next instruction if the key stored in vx isn't pressed
+	kSn V5			; Skips the next instruction if the key stored in vx isn't pressed
 	del v7			; Sets vx to the value of the delay timer
 	wkp v9			; A key press is awaited, and then stored in vx
 	setd vb			; Sets the delay timer to vx
-	sets vd			; Sets the sound timer to vx
+	sEts vd			; Sets the sound timer to vx
 	adi vf			; Adds xv to I
 	spr va			; Sets I to the location of the sprite for the character in vx
-	sbi vc			; Stores the binary-coded decimal representation of VX at I, I + 1, and I + 2
-	sto ve			; Stores v0 to vx in memory starting at address I
+	sbi vC			; Stores the binary-coded decimal representation of VX at I, I + 1, and I + 2
+	sto vE			; Stores v0 to vx in memory starting at address I
 	fil v0			; Fills vo to vx with values from memory starting at address I
 	se v3    , 8f	; Skip the next instruction if vx == nn
 	se v5, v7		; Skip the next instruction if vx == vy
 	sne v8, d6		; Skip the next instruction if vx != nn
 	sne v2, vc		; Skip the next instruction if vx != vy
-	set vb, 7c		; Sets vx to nn
+	set vB, 7c		; Sets vx to nn
 	set v1, v5		; Sets vx to the value of vy
 	add v4, 6e		; Adds nn to vx
-	add va, vd		; vx += vy
+	aDd va, vd		; vx += vy
 	or v0, v9		; Sets vx to vx or vy
 	and ve, v7		; Sets vx to vx and vy
-	xor v8, vf		; Sets vx to vx xor vy
+	Xor v8, vf		; Sets vx to vx xor vy
 	sub v3, v5		; vx -= vy
 	subx v4, v9		; vx = vy - vx
 	rnd v3, ce		; Sets vx to a random number and nn
