@@ -6,7 +6,7 @@ example2:
    jmp example4  ; Jump to code label
    ;jmp nnn			; Jump to nnn, nnn can also be a label
 example4:
-	call example70 ; Call subroutine at nnn
+	call example2   ; Call subroutine at nnn
 	shr v3, ve		; Shift vy right by one and store it in vx
 	shl ve, v3		; Shift vy left by one and store it in vx
 	ind example2	; Sets I to the address NNN
@@ -24,40 +24,16 @@ example4:
 	fil v0			; Fills vo to vx with values from memory starting at address I
 	se v3    , 8f	; Skip the next instruction if vx == nn
 	se v5, v7		; Skip the next instruction if vx == vy
-	sne vx, nn		; Skip the next instruction if vx != nn
-	set vx, nn		; Sets vx to nn
-	add vx, nn		; Adds nn to vx
-	set vx, vy		; Sets vx to the value of vy
-	or vx, vy		; Sets vx to vx or vy
-	and vx, vy		; Sets vx to vx and vy
-	xor vx, vy		; Sets vx to vx xor vy
-	add vx, vy		; vx += vy
-	sub vx, vy		; vx -= vy
-	subx vx, vy		; vx = vy - vx
-	sne vx, vy		; Skip the next instruction if vx != vy
-	rnd vx, nn		; Sets vx to a random number and nn
-	draw vx, vy, n	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I
-	ret
-   clr;This should still find clr, but ignore the rest
-example70:
-   clr
-   ret
-	
-	draw vx,
-	vn,
-	n				; Should be fine
-	
-	rnd vx ,
-	vy				; Should be fine
-
-   draw vx,vn,n   ; Should be fine
-	
-	;no vx, vy		; Should fail
-	
-	;sub vx    ,
-	;vy    ,
-	;nn				; Should fail
-	
-	;or vx, vy, vz	; Should fail
-	;draw vx			; Should fail
-   ;:             ; Empty code label
+	sne v8, d6		; Skip the next instruction if vx != nn
+	sne v2, vc		; Skip the next instruction if vx != vy
+	set vb, 7c		; Sets vx to nn
+	set v1, v5		; Sets vx to the value of vy
+	add v4, 6e		; Adds nn to vx
+	add va, vd		; vx += vy
+	or v0, v9		; Sets vx to vx or vy
+	and ve, v7		; Sets vx to vx and vy
+	xor v8, vf		; Sets vx to vx xor vy
+	sub v3, v5		; vx -= vy
+	subx v4, v9		; vx = vy - vx
+	rnd v3, ce		; Sets vx to a random number and nn
+	draw v3, v6, 8	; Draw sprites at coordinates vx, vy, with a height of n, width of 8, sprite starts at I

@@ -112,14 +112,14 @@ void Assembler::assemble(const std::string &fileName)
    else
    {
       // Time to actually do some assembly
-      unsigned char *memory = new unsigned char[curMemLoc + 2];
-      for(unsigned int i = 0; i < curMemLoc + 2; i++)
+      unsigned char *memory = new unsigned char[curMemLoc];
+      for(unsigned int i = 0; i < curMemLoc; i++)
       {
          memory[i] = 0;
       }
 
       unsigned int ti = 0;
-      for(unsigned int i = 0; i < curMemLoc + 2 && !error; i += 2)
+      for(unsigned int i = 0; i < curMemLoc && !error; i += 2)
       {
          unsigned short opcode = 0;
          if(isCodeLabel(tokens[ti]))
@@ -439,46 +439,275 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Skips the next instruction if vx != nn, or if vx != vy
             // 4XNN or 9XY0
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be a register
+            int reg1 = getRegister(arg1);
+            // Could be a register or a constant
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid register"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               // Must be a constant
+               int num = getConstant(arg2);
+               if(num == -1)
+               {
+                  error = true;
+                  std::cout<<"Arg "<<arg2<<" is not a valid register or constant"<<std::endl;
+               }
+               else
+               {
+                  opcode = 0x4000 | (reg1 << 8) | (num & 0x00FF);
+               }
+            }
+            else
+            {
+               opcode = 0x9000 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("set"))
          {
             // Sets VX to NN, or VX to the value of VY
             // 6XNN or 8XY0
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be a register
+            int reg1 = getRegister(arg1);
+            // Could be a register or a constant
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid register"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               // Must be a constant
+               int num = getConstant(arg2);
+               if(num == -1)
+               {
+                  error = true;
+                  std::cout<<"Arg "<<arg2<<" is not a valid register or constant"<<std::endl;
+               }
+               else
+               {
+                  opcode = 0x6000 | (reg1 << 8) | (num & 0x00FF);
+               }
+            }
+            else
+            {
+               opcode = 0x8000 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("add"))
          {
             // Adds NN to VX, or VX += VY
             // 7XNN or 8XY4
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be a register
+            int reg1 = getRegister(arg1);
+            // Could be a register or a constant
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid register"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               // Must be a constant
+               int num = getConstant(arg2);
+               if(num == -1)
+               {
+                  error = true;
+                  std::cout<<"Arg "<<arg2<<" is not a valid register or constant"<<std::endl;
+               }
+               else
+               {
+                  opcode = 0x7000 | (reg1 << 8) | (num & 0x00FF);
+               }
+            }
+            else
+            {
+               opcode = 0x8004 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("or"))
          {
             // VX = VX | VY
             // 8XY1
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8001 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("and"))
          {
             // VX = VX & VY
             // 8XY2
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8002 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("xor"))
          {
             // VX = VX ^ VY
             // 8XY3
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8003 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("sub"))
          {
             // VX -= VY
             // 8XY5
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8005 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("subx"))
          {
             // VX = VY - VX
             // 8XY7
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else
+            {
+               opcode = 0x8007 | (reg1 << 8) | (reg2 << 4);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("rnd"))
          {
             // Sets VX to a random number and NN
             // CXNN
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+
+            // Should be a register
+            int reg = getRegister(arg1);
+            // Should be a constant
+            int num = getConstant(arg2);
+            if(reg == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(num == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid constant"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xC000 | (reg << 8) | (num & 0x00FF);
+            }
+            ti++;
          }
          else if(!tokens[ti].compare("shr"))
          {
@@ -541,10 +770,41 @@ void Assembler::assemble(const std::string &fileName)
             // Draw sprites at coordinates VX, VY, with a height of N, width of 8,
             // sprite starts at I
             // DXYN
+            std::string arg1 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg2 = tokens[++ti];
+            ti++;    // Should be a comma
+            std::string arg3 = tokens[++ti];
+
+            // First two should be registers
+            int reg1 = getRegister(arg1);
+            int reg2 = getRegister(arg2);
+            // Last argument should be a constant, but can only be between 0-0xF
+            int num = getConstant(arg3);
+            if(reg1 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg1<<" is not a valid regsiter"<<std::endl;
+            }
+            else if(reg2 == -1)
+            {
+               error = true;
+               std::cout<<"Arg "<<arg2<<" is not a valid register"<<std::endl;
+            }
+            else if((num == -1) || (num > 0xF))
+            {
+               error = true;
+               std::cout<<"Arg "<<arg3<<" is not a valid constant"<<std::endl;
+            }
+            else
+            {
+               opcode = 0xD000 | (reg1 << 8) | (reg2 << 4) | (num & 0x000F);
+            }
+            ti++;
          }
          else
          {
-            std::cout<<"Error"<<std::endl;
+            std::cout<<"Error with token "<<tokens[ti]<<std::endl;
             error = true;
          }
 
@@ -559,7 +819,7 @@ void Assembler::assemble(const std::string &fileName)
       if(!error)
       {
          std::ofstream output((fileName + ".bin").c_str(), std::ofstream::binary);
-         output.write((char*)memory, curMemLoc + 2);
+         output.write((char*)memory, curMemLoc);
          output.close();
       }
 
@@ -807,7 +1067,7 @@ int Assembler::getConstant(const std::string &con)
          num += 0x60;
          break;
       case '7':
-         num += 0x80;
+         num += 0x70;
          break;
       case '8':
          num += 0x80;
