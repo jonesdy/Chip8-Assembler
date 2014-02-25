@@ -169,7 +169,7 @@ void Assembler::assemble(const std::string &fileName)
             }
             else
             {
-               opcode = 0x1000 | (loc & 0x0FFF);
+               opcode = 0x2000 | (loc & 0x0FFF);
             }
             ti++;
          }
