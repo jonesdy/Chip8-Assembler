@@ -828,6 +828,7 @@ void Assembler::assemble(const std::string &fileName)
                   opcode = (num1 << 12) | (num2 << 8) | (num3 << 4) | num4;
                }
             }
+            ti++;
          }
          else
          {
