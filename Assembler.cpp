@@ -100,11 +100,6 @@ void Assembler::assemble(const std::string &fileName)
       error = true;
    }
 
-   for(unsigned int i = 0; i < labels.size(); i++)
-   {
-      std::cout<<labels[i].getLabelName()<<" "<<labels[i].getLocation()<<std::endl;
-   }
-
    if(error)
    {
       std::cout<<"ERROR: Assembly failed (see above)"<<std::endl;
@@ -849,6 +844,7 @@ void Assembler::assemble(const std::string &fileName)
          std::ofstream output((fileName + ".bin").c_str(), std::ofstream::binary);
          output.write((char*)memory, curMemLoc);
          output.close();
+         std::cout<<"Assembled to "<<(fileName + ".bin").c_str()<<std::endl;
       }
 
       delete[] memory;
