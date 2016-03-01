@@ -138,8 +138,13 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Jump to NNN, 1NNN
             std::string arg = tokens[++ti];
-            // Should be a code label
-            int loc = getLabelLocation(arg);
+            // If not a valid number, must be a code label
+            int loc = getConstant(arg);
+            if(loc == -1)
+            {
+               // Should be a code label
+               loc = getLabelLocation(arg);
+            }
             if(loc == -1)
             {
                error = true;
@@ -155,8 +160,13 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Call subroutine at NNN, 2NNN
             std::string arg = tokens[++ti];
-            // Should be a code label
-            int loc = getLabelLocation(arg);
+            // If not a valid number, must be a code label
+            int loc = getConstant(arg);
+            if(loc == -1)
+            {
+               // Should be a code label
+               loc = getLabelLocation(arg);
+            }
             if(loc == -1)
             {
                error = true;
@@ -172,8 +182,13 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Sets I to address NNN, ANNN
             std::string arg = tokens[++ti];
-            // Should be a code label
-            int loc = getLabelLocation(arg);
+            // If not a valid number, must be a code label
+            int loc = getConstant(arg);
+            if(loc == -1)
+            {
+               // Should be a code label
+               loc = getLabelLocation(arg);
+            }
             if(loc == -1)
             {
                error = true;
@@ -189,8 +204,13 @@ void Assembler::assemble(const std::string &fileName)
          {
             // Jumps to the address NNN plus V0, BNNN
             std::string arg = tokens[++ti];
-            // Should be a code label
-            int loc = getLabelLocation(arg);
+            // If not a valid number, must be a code label
+            int loc = getConstant(arg);
+            if(loc == -1)
+            {
+               // Should be a code label
+               loc = getLabelLocation(arg);
+            }
             if(loc == -1)
             {
                error = true;
